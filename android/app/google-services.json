@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "820757130873",
+    "project_id": "seaotters-57347",
+    "storage_bucket": "seaotters-57347.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820757130873:android:2f946cf91c6c57d47e6ea8",
+        "android_client_info": {
+          "package_name": "com.Seaotter.StudyInsta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820757130873-impgn9coatm23vr0cf96htf7vo1ocbhe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3ISomEa41YbeAPp71Avdv9CSNnItLpVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820757130873-impgn9coatm23vr0cf96htf7vo1ocbhe.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "820757130873-tgs66it2krepgvbaguu3i0i58b835efl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.Seaotter.StudyInsta"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

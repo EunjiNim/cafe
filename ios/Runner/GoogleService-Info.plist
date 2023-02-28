@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>820757130873-tgs66it2krepgvbaguu3i0i58b835efl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.820757130873-tgs66it2krepgvbaguu3i0i58b835efl</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC5wlqyg9b7aI7Jl5K1qY4JzrSxPYFe7_g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>820757130873</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.Seaotter.StudyInsta</string>
+	<key>PROJECT_ID</key>
+	<string>seaotters-57347</string>
+	<key>STORAGE_BUCKET</key>
+	<string>seaotters-57347.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:820757130873:ios:724b06a6004907a47e6ea8</string>
+</dict>
+</plist>
