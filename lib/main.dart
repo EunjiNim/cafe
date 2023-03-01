@@ -6,7 +6,8 @@ import 'firebase_options.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cafe/shoppingcart.dart';
+import 'shoppingcart.dart';
+import 'login.dart';
 final firestore = FirebaseFirestore.instance;
 
 
@@ -17,7 +18,7 @@ void main() async{
   );
   runApp(
       ChangeNotifierProvider(
-        create: (c) => Store1(),
+        create: (c) => UserloginState(),
         child: MaterialApp(
           // css라고 생각하면 편함
           // ThemeData 특징 - 위젯은 나랑 가까운 스타일을 가장 먼저 적용함
@@ -32,6 +33,8 @@ void main() async{
           initialRoute: '/',
           routes: {
             '/' : (c) => MyApp(),
+            '/shoppingcart': (c) => shoppingcart(),
+            '/login': (c) => login(),
           },
           //home: MyApp()
         ),
@@ -60,6 +63,7 @@ class _MyAppState extends State<MyApp> {
     // TODO: implement initState
     super.initState();
     getData();
+
   }
 
   getData() async{
@@ -101,9 +105,19 @@ class _MyAppState extends State<MyApp> {
                 child:
                   Icon(Icons.shopping_cart, size: 40),
                   backgroundColor: Colors.lightGreen,
-                onPressed: (){
-                 Navigator.push(context,
-                     CupertinoPageRoute (builder: (c) => shoppingcart(selectProduct: selectProduct)));
+                onPressed:() async{
+                 final result = await Navigator.push(context,
+                     CupertinoPageRoute (builder: (c) => shoppingcart(selectProduct: selectProduct, data:data)));
+                 setState(() {
+                   // 취소 버튼을 눌렀을 경우 선택한 아이템에 관한 정보를 초기화해줌
+                   if(result == 'select_cancle'){
+                       selectProduct.clear();
+                       saveCount = 0;
+                       selectCount = 0;
+
+                       getSelectCountData();
+                   }
+                 });
                 },
               ),
             )
@@ -158,7 +172,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   trailing: IconButton(
                     icon:Icon(Icons.add), onPressed: (){
+                      // 더하기 버튼 클릭 시 bottomsheet 출력되도록 함
                       showModalBottomSheet<void>(
+                          isDismissible: false,
                           context: context,
                           builder: (BuildContext context){
                             return Container(
@@ -173,6 +189,21 @@ class _MyAppState extends State<MyApp> {
                               child: Center(
                                 child: Column(
                                   children: <Widget>[
+                                      Container(
+                                        width: double.infinity,
+                                        height: 25,
+                                        child: ElevatedButton(
+                                            onPressed: (){
+                                              Navigator.pop(context, 'OK');
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.transparent,
+                                              foregroundColor: Colors.grey,
+                                              elevation: 0,
+                                              ),
+                                            child: Icon(Icons.expand_more, color: Colors.grey, size: 30,),
+                                        ),
+                                      ),
                                       Container(
                                         width: double.infinity,
                                         height: 40,
@@ -193,10 +224,8 @@ class _MyAppState extends State<MyApp> {
                                                 setState(() {
                                                   selectCount = selectProduct[i][1];
                                                   selectCount--;
-                                                  saveCount--;
 
-                                                  if(selectCount < 0){ selectCount = 0;}
-                                                  if(saveCount < 0){ saveCount = 0;}
+                                                  if(selectCount <= 0){ selectCount = 0;}
 
                                                   selectProduct[i][1] = selectCount.toInt();
                                                 });
@@ -212,12 +241,12 @@ class _MyAppState extends State<MyApp> {
                                                 setState(() {
                                                   selectCount = selectProduct[i][1];
                                                   selectCount++;
-                                                  saveCount++;
 
                                                   if(selectCount >= 10){
                                                     selectCount = 10;
                                                     popupDialog(context);
                                                   }
+
                                                   selectProduct[i][1] = selectCount.toInt();
                                                 });
                                               },
@@ -239,7 +268,14 @@ class _MyAppState extends State<MyApp> {
                                             ElevatedButton(
                                                 onPressed: (){
                                                   setState(() {
-                                                    saveCount = selectCount;
+                                                    saveCount = 0;
+                                                    for(var i = 0; i < data.length; i++){
+                                                      if(selectProduct[i][1] > 0){
+                                                        var count = 0;
+                                                        count = selectProduct[i][1].toInt();
+                                                        saveCount += count;
+                                                      }
+                                                    }
                                                     Navigator.pop(context, 'OK');
                                                   });
                                                 },
@@ -252,7 +288,7 @@ class _MyAppState extends State<MyApp> {
                                             ),
                                             ElevatedButton(
                                                 onPressed: (){},
-                                                child: Text('구매하기', style: TextStyle(fontSize: 17),),
+                                                child: Text('주문하기', style: TextStyle(fontSize: 17),),
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.deepOrangeAccent,
                                                   fixedSize: Size(150, 150),
@@ -299,6 +335,7 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+// 10개 이상 주문 시도 시 팝업 출력
 void popupDialog(context){
   showDialog(
       context: context,
@@ -330,6 +367,13 @@ void popupDialog(context){
   );
 }
 
-class Store1 extends ChangeNotifier{
+// 로그인 상태를 판별 및 갱신하기 위해 사용
+class UserloginState extends ChangeNotifier{
+  bool loginState = false;
 
+  changeState(bool state){
+    loginState = state;
+    //재랜더링 요청
+    notifyListeners();
+  }
 }
