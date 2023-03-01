@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:badges/badges.dart'as badges;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import 'shoppingcart.dart';
 import 'login.dart';
-final firestore = FirebaseFirestore.instance;
+import 'order.dart';
 
+final firestore = FirebaseFirestore.instance;
+final auth = FirebaseAuth.instance;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +38,7 @@ void main() async{
             '/' : (c) => MyApp(),
             '/shoppingcart': (c) => shoppingcart(),
             '/login': (c) => login(),
+            '/order': (c) => order(),
           },
           //home: MyApp()
         ),
@@ -85,6 +89,10 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  logOut() async{
+    await auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context) {
     _showCartBadge = saveCount > 0;
@@ -129,7 +137,7 @@ class _MyAppState extends State<MyApp> {
               visualDensity: VisualDensity(horizontal: 3.0, vertical: 3.0),
               padding: EdgeInsets.zero,),
             IconButton(
-              icon: Icon(Icons.density_medium_outlined), onPressed:(){},),
+              icon: Icon(Icons.density_medium_outlined), onPressed:(){ logOut(); },),
            ],
           //leading: Icon(Icons.list),
           title: Text('Urbansky'),
@@ -326,7 +334,7 @@ class _MyAppState extends State<MyApp> {
             ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.more_horiz, size: 30),
-                label: 'Other'
+                label: 'Other',
             ),
           ],
         ),

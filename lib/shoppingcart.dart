@@ -1,6 +1,10 @@
 import 'package:cafe/main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cafe/order.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+final auth = FirebaseAuth.instance;
 
 class shoppingcart extends StatefulWidget {
   const shoppingcart({Key? key, this.selectProduct, this.data}) : super(key: key);
@@ -113,11 +117,12 @@ class _shoppingcartState extends State<shoppingcart> {
             ElevatedButton(
                 onPressed: (){
                   //로그인 상태가 아니라면 로그인 페이지로 이동하고, 로그인 상태라면 주문 진행
-                  if(loginState.loginState == false){
+                  if(auth.currentUser?.uid == null){
                     Navigator.pushNamed(context, '/login');
-                  }else{
-
+                  } else{
+                    Navigator.pushNamed(context, '/order');
                   }
+
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,

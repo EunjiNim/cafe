@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cafe/main.dart';
+import 'package:cafe/order.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 final auth = FirebaseAuth.instance;
@@ -14,6 +15,30 @@ class login extends StatefulWidget {
 
 class _loginState extends State<login> {
   late UserloginState loginState;
+  final myIDController = TextEditingController();
+  final myPWController = TextEditingController();
+
+  // 아이디 체크
+  loginCheck() async{
+    try{
+      await auth.signInWithEmailAndPassword(
+          email: myIDController.text,
+          password: myPWController.text,
+      );
+      // 주문하기 페이지로 이동함
+      // ignore: use_build_context_synchronously
+      Navigator.pushNamed(context, '/order');
+    } on FirebaseAuthException catch (e){
+      if(e.code == 'user-not-found' || e.code == 'wrong-password'){
+        wrongIDDialog(context);
+      }
+    }
+  }
+
+  // 로그아웃
+  logOut() async{
+    await auth.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +61,24 @@ class _loginState extends State<login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
+                controller: myIDController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'ID',
+                  labelText: 'ID (guest@test.com)',
                 ),
               ),
               SizedBox(
                 height: 10.0,
               ),
               TextFormField(
+                controller: myPWController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: 'PassWord',
+                  labelText: 'PassWord (test1234)',
                 ),
               ),
               Container(
-                padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 10.0),
+                padding: EdgeInsets.fromLTRB(20.0, 25.0, 20.0, 8.0),
                 child: Text('SNS 로그인 및 회원가입 서비스는 현재 이용이 불가합니다.',
                             style: TextStyle(color: Colors.grey, fontSize: 12),),
               ),
@@ -84,6 +111,15 @@ class _loginState extends State<login> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('처음 오셨나요?', style: TextStyle(color: Colors.grey)),
+                  TextButton(
+                      onPressed: (){ popupDialog(context); },
+                      child: Text('회원가입')),
+                ],
+              ),
             ],
           ),
         ),
@@ -94,7 +130,9 @@ class _loginState extends State<login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton (
-                onPressed: (){},
+                onPressed: (){
+                  loginCheck();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
                   elevation: 1,
@@ -102,7 +140,7 @@ class _loginState extends State<login> {
                   minimumSize: Size(350, 40),
                   padding: EdgeInsets.all(8.0),
                 ),
-                child: Text('로그인', style: TextStyle(color: Colors.white, fontSize: 18),))
+                child: Text('로그인', style: TextStyle(color: Colors.white, fontSize: 18),)),
           ],
         ),
       ),
@@ -129,7 +167,7 @@ class Snsbutton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
         ),
-        onPressed: (){},
+        onPressed: (){ popupDialog(context); },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -144,3 +182,68 @@ class Snsbutton extends StatelessWidget {
     );
   }
 }
+
+// 구현되지 않은 항목 버튼 클릭 시 팝업 출력
+void popupDialog(context){
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)),
+          title: Column(
+            children: [
+              new Text('알림', style: TextStyle(color: Colors.teal, fontSize: 18,),),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              new Text('현재 이용이 불가능한 서비스입니다.'),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () {
+              Navigator.pop(context);
+            },
+                child: Text('확인'))
+          ],
+        );
+      }
+  );
+}
+
+// 로그인 실패 시 출력
+void wrongIDDialog(context){
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)),
+          title: Column(
+            children: [
+              new Text('알림', style: TextStyle(color: Colors.teal, fontSize: 18,),),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              new Text('아이디 혹은 비밀번호를 다시 확인해주세요'),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () {
+              Navigator.pop(context);
+            },
+                child: Text('확인'))
+          ],
+        );
+      }
+  );
+}
+
