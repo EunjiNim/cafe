@@ -21,7 +21,7 @@ void main() async{
   );
   runApp(
       ChangeNotifierProvider(
-        create: (c) => UserloginState(),
+        create: (c) => ItemList(),
         child: MaterialApp(
           // css라고 생각하면 편함
           // ThemeData 특징 - 위젯은 나랑 가까운 스타일을 가장 먼저 적용함
@@ -70,12 +70,14 @@ class _MyAppState extends State<MyApp> {
 
   }
 
+  // 상품 리스트 받아오기
   getData() async{
     var result = await firestore.collection('product').get();
 
     for(var doc in result.docs){
       data.add(doc.data());
     }
+    // 리스트 데이터의 인덱스 순으로 정렬
     data.sort((a,b)=>a['Index'].compareTo(b['Index']));
 
     getSelectCountData();
@@ -383,5 +385,16 @@ class UserloginState extends ChangeNotifier{
     loginState = state;
     //재랜더링 요청
     notifyListeners();
+  }
+}
+
+class ItemList extends ChangeNotifier{
+  var finalList = [];
+
+  changeList(var List){
+    finalList = List;
+
+    notifyListeners();
+    print(finalList);
   }
 }

@@ -16,7 +16,7 @@ class shoppingcart extends StatefulWidget {
 }
 
 class _shoppingcartState extends State<shoppingcart> {
-  late UserloginState loginState;
+  late ItemList itemList;
 
   var itemcount = 0;
   var selectList = [];
@@ -44,7 +44,7 @@ class _shoppingcartState extends State<shoppingcart> {
 
   @override
   Widget build(BuildContext context) {
-    loginState = Provider.of<UserloginState>(context);
+    itemList = Provider.of<ItemList>(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -116,13 +116,13 @@ class _shoppingcartState extends State<shoppingcart> {
             selectList.isEmpty ? Text('주문하기', style: TextStyle(color: Colors.grey, fontSize: 17)) :
             ElevatedButton(
                 onPressed: (){
+                  itemList.changeList(selectList);
                   //로그인 상태가 아니라면 로그인 페이지로 이동하고, 로그인 상태라면 주문 진행
                   if(auth.currentUser?.uid == null){
                     Navigator.pushNamed(context, '/login');
                   } else{
                     Navigator.pushNamed(context, '/order');
                   }
-
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
